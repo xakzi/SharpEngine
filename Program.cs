@@ -12,7 +12,6 @@ namespace SharpEngine
             // initialize and configure
             Window window = CreateWindow();
             LoadTriangleIntoBuffer();
-
             CreateShaderProgram();
 
             // engine rendering loop
