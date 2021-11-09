@@ -13,8 +13,33 @@ namespace SharpEngine
             // vertex 2 x,y,z
                 .5f, -.5f, 0f,
             //vertex 3 x,y,z
-                0f, .5f, 0f
+                0f, .5f, 0f,
+
+           /* //use this to fit both first and second triangle
+            // vertex 1 x,y,z   
+            -1f, -.5f, 0f,
+            // vertex 2 x,y,z
+                0f, -.5f, 0f,
+            //vertex 3 x,y,z
+                -.5f, .5f, 0f,
+            
+            // vertex 1 x,y,z   
+            1f, -.5f, 0f,
+            // vertex 2 x,y,z
+                0f, -.5f, 0f,
+            //vertex 3 x,y,z
+                0.5f, .5f, 0f*/
             };
+
+        static float[] verticesTempCenter = new float[]
+        {
+            0f,0f,0f,
+            0f,0f,0f,
+            0f,0f,0f
+        };
+
+        
+        static float transformSpeed = 0.00005f;
         static void Main(string[] args)
         {
             // initialize and configure
@@ -28,13 +53,51 @@ namespace SharpEngine
                 Glfw.PollEvents(); // react to window changes (position etc.)
                 glClearColor(0, 0, 0, 1);
                 glClear(GL_COLOR_BUFFER_BIT);
-                //glDrawArrays(GL_LINE_LOOP, 0, 3);
-                glDrawArrays(GL_TRIANGLES, 0, 3);
-                //Glfw.SwapBuffers(window);
+                //glDrawArrays(GL_LINE_LOOP, 0, 3); //Lined Triangle
+                glDrawArrays(GL_TRIANGLES, 0, 3); //Filled Triangle
+                //glDrawArrays(GL_TRIANGLES, 0, 6); //use this to get second triangle
+                //Glfw.SwapBuffers(window); //Don't need this, uses glFlush() Instead.
                 glFlush();
-                vertices[0] += 0.001f;
+
+                //TriangleMoveToRightContinuously();
+                //TriangleMoveDownContinuously();
+                //TriangleShrinkContinuously();
+                //TriangleScaleUpContinously();
+
                 UpdateTriangleBuffer();
             }
+        }
+
+        private static void TriangleScaleUpContinously()
+        {
+            vertices[0] -= transformSpeed;
+            vertices[1] -= transformSpeed;
+            vertices[3] += transformSpeed;
+            vertices[4] -= transformSpeed;
+            vertices[7] += transformSpeed;
+        }
+
+        private static void TriangleShrinkContinuously()
+        {
+            vertices[0] += transformSpeed;
+            vertices[1] += transformSpeed;
+            vertices[3] -= transformSpeed;
+            vertices[4] += transformSpeed;
+            vertices[7] -= transformSpeed;
+        }
+
+        private static void TriangleMoveDownContinuously()
+        {
+            vertices[1] -= transformSpeed;
+            vertices[4] -= transformSpeed;
+            vertices[7] -= transformSpeed;
+        }
+
+        private static void TriangleMoveToRightContinuously()
+        {
+            vertices[0] += transformSpeed;
+            vertices[3] += transformSpeed;
+            vertices[6] += transformSpeed;
         }
 
         private static unsafe void LoadTriangleIntoBuffer()
