@@ -78,10 +78,8 @@ namespace SharpEngine
                 //Bounces
                 //TriangleBouncesRightAndLeftContinously();
                 //TriangleBouncesRightAndLeftContinously2();
-                TriangleBouncesUpAndDownContinously();
+                //TriangleBouncesUpAndDownContinously();
                 //TriangleBouncesUpAndDownContinously2();
-                //TriangleBouncesRightUpAndLeftDown();
-                TriangleBouncesRightUpAndLeftDown2();
 
                 //Diagonal Lines
                 //TriangleMoveDownLeftContinuously();
@@ -272,42 +270,6 @@ namespace SharpEngine
             for (var i = 0; i < vertices.Length / 2; i++)
             {
                 vertices[i].x += transformSpeed;
-            }
-        }
-
-        private static void TriangleBouncesRightUpAndLeftDown()
-        {
-            if (touchWall == false)
-            {
-                TriangleMoveToRightUpContinuously();
-                for (var i = 0; i < vertices.Length / 2; i++)
-                    if (vertices[i].x >= 1f)
-                        touchWall = true;
-            }
-            else
-            {
-                TriangleMoveDownLeftContinuously();
-                for (var i = 0; i < vertices.Length / 2; i++)
-                    if (vertices[i].x <= -1f)
-                        touchWall = false;
-            }
-        }
-
-        private static void TriangleBouncesRightUpAndLeftDown2()
-        {
-            if (touchWall2 == false)
-            {
-                TriangleMoveToRightUpContinuously2();
-                for (var i = 3; i < vertices.Length; i++)
-                    if (vertices[i].x >= 1f)
-                        touchWall2 = true;
-            }
-            else
-            {
-                TriangleMoveDownLeftContinuously2();
-                for (var i = 3; i < vertices.Length; i++)
-                    if (vertices[i].x <= -1f)
-                        touchWall2 = false;
             }
         }
 
