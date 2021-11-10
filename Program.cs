@@ -31,12 +31,9 @@ namespace SharpEngine
                 0.5f, .5f, 0f*/
             };
 
-        static float[] verticesTempCenter = new float[]
-        {
-            0f,0f,0f,
-            0f,0f,0f,
-            0f,0f,0f
-        };
+        const int vertexX = 0;
+        const int vertexY = 1;
+        const int vertexSize = 3;
 
         
         static float transformSpeed = 0.00005f;
@@ -51,21 +48,33 @@ namespace SharpEngine
             while (!Glfw.WindowShouldClose(window))
             {
                 Glfw.PollEvents(); // react to window changes (position etc.)
-                glClearColor(0, 0, 0, 1);
-                glClear(GL_COLOR_BUFFER_BIT);
-                //glDrawArrays(GL_LINE_LOOP, 0, 3); //Lined Triangle
-                glDrawArrays(GL_TRIANGLES, 0, 3); //Filled Triangle
-                //glDrawArrays(GL_TRIANGLES, 0, 6); //use this to get second triangle
-                //Glfw.SwapBuffers(window); //Don't need this, uses glFlush() Instead.
-                glFlush();
+                ClearScreen();
+                Render();
 
                 //TriangleMoveToRightContinuously();
                 //TriangleMoveDownContinuously();
                 //TriangleShrinkContinuously();
                 //TriangleScaleUpContinously();
 
+                
+
                 UpdateTriangleBuffer();
             }
+        }
+
+        private static void Render()
+        {
+            //glDrawArrays(GL_LINE_LOOP, 0, 3); //Lined Triangle
+            glDrawArrays(GL_TRIANGLES, 0, 3); //Filled Triangle
+                                              //glDrawArrays(GL_TRIANGLES, 0, 6); //use this to get second triangle
+                                              //Glfw.SwapBuffers(window); //Don't need this, uses glFlush() Instead.
+            glFlush();
+        }
+
+        private static void ClearScreen()
+        {
+            glClearColor(0, 0, 0, 1);
+            glClear(GL_COLOR_BUFFER_BIT);
         }
 
         private static void TriangleScaleUpContinously()
@@ -88,16 +97,19 @@ namespace SharpEngine
 
         private static void TriangleMoveDownContinuously()
         {
-            vertices[1] -= transformSpeed;
-            vertices[4] -= transformSpeed;
-            vertices[7] -= transformSpeed;
+            for (var i = vertexY; i < vertices.Length; i += vertexSize)
+            {
+                vertices[i] -= transformSpeed;
+            }
         }
 
         private static void TriangleMoveToRightContinuously()
         {
-            vertices[0] += transformSpeed;
-            vertices[3] += transformSpeed;
-            vertices[6] += transformSpeed;
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                if (i % 3 == 0) vertices[i] += transformSpeed;
+            }
+
         }
 
         private static unsafe void LoadTriangleIntoBuffer()
@@ -127,12 +139,12 @@ namespace SharpEngine
         {
             // create vertex shader
             var vertexShader = glCreateShader(GL_VERTEX_SHADER);
-            glShaderSource(vertexShader, File.ReadAllText("shaders/red-triangle.vert"));
+            glShaderSource(vertexShader, File.ReadAllText("shaders/screen-coordinates.vert"));
             glCompileShader(vertexShader);
 
             //create fragment shader
             var fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-            glShaderSource(fragmentShader, File.ReadAllText("shaders/red-triangle.frag"));
+            glShaderSource(fragmentShader, File.ReadAllText("shaders/green.frag"));
             glCompileShader(fragmentShader);
 
             // create shader program - rendering pipeline
