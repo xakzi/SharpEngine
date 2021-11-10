@@ -8,27 +8,18 @@ namespace SharpEngine
     class Program
     {
         static float[] vertices = new float[] {
-            // vertex 1 x,y,z   
-            -.5f, -.5f, 0f,
-            // vertex 2 x,y,z
-                .5f, -.5f, 0f,
-            //vertex 3 x,y,z
-                0f, .5f, 0f,
-
-           /* //use this to fit both first and second triangle
-            // vertex 1 x,y,z   
-            -1f, -.5f, 0f,
-            // vertex 2 x,y,z
-                0f, -.5f, 0f,
-            //vertex 3 x,y,z
-                -.5f, .5f, 0f,
-            
-            // vertex 1 x,y,z   
-            1f, -.5f, 0f,
-            // vertex 2 x,y,z
-                0f, -.5f, 0f,
-            //vertex 3 x,y,z
-                0.5f, .5f, 0f*/
+           // vertex 1 x, y, z
+            -.1f, -.1f, 0f,
+            // vertex 2 x, y, z
+            .1f, -.1f, 0f,
+            // vertex 3 x, y, z
+            0f, .1f, 0f,
+            // vertex 4 x, y, z
+            .4f, .4f, 0f,
+            // vertex 5 x, y, z
+            .6f, .4f, 0f,
+            // vertex 6 x, y, z
+            .5f, .6f, 0f
             };
 
         const int vertexX = 0;
@@ -65,7 +56,7 @@ namespace SharpEngine
         private static void Render()
         {
             //glDrawArrays(GL_LINE_LOOP, 0, 3); //Lined Triangle
-            glDrawArrays(GL_TRIANGLES, 0, 3); //Filled Triangle
+            glDrawArrays(GL_TRIANGLES, 0, vertices.Length/vertexSize); //Filled Triangle
                                               //glDrawArrays(GL_TRIANGLES, 0, 6); //use this to get second triangle
                                               //Glfw.SwapBuffers(window); //Don't need this, uses glFlush() Instead.
             glFlush();
@@ -79,20 +70,18 @@ namespace SharpEngine
 
         private static void TriangleScaleUpContinously()
         {
-            vertices[0] -= transformSpeed;
-            vertices[1] -= transformSpeed;
-            vertices[3] += transformSpeed;
-            vertices[4] -= transformSpeed;
-            vertices[7] += transformSpeed;
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] *= 1.00009f;
+            }
         }
 
         private static void TriangleShrinkContinuously()
         {
-            vertices[0] += transformSpeed;
-            vertices[1] += transformSpeed;
-            vertices[3] -= transformSpeed;
-            vertices[4] += transformSpeed;
-            vertices[7] -= transformSpeed;
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] *= 0.9999f;
+            }
         }
 
         private static void TriangleMoveDownContinuously()
