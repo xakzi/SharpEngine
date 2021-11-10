@@ -5,29 +5,41 @@ using System.IO;
 
 namespace SharpEngine
 {
+    struct Vector
+    {
+        public float x, y, z;
+
+        public Vector(float x, float y, float z)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
+        public Vector(float x, float y)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = 0;
+        }
+    }
     class Program
     {
-        static float[] vertices = new float[] {
-           // vertex 1 x, y, z
-            -.1f, -.1f, 0f,
-            // vertex 2 x, y, z
-            .1f, -.1f, 0f,
-            // vertex 3 x, y, z
-            0f, .1f, 0f,
-            // vertex 4 x, y, z
-            .4f, .4f, 0f,
-            // vertex 5 x, y, z
-            .6f, .4f, 0f,
-            // vertex 6 x, y, z
-            .5f, .6f, 0f
+        static Vector[] vertices = new Vector[] {
+            new Vector(-.1f, -.1f),
+            new Vector(.1f, -.1f),
+            new Vector(0f, .1f),
+
+            new Vector(.4f, .4f),
+            new Vector(.6f, .4f),
+            new Vector(.5f, .6f)
             };
 
         const int vertexX = 0;
         const int vertexY = 1;
         const int vertexSize = 3;
-
         
-        static float transformSpeed = 0.00005f;
+        static float transformSpeed = 0.0005f;
         static void Main(string[] args)
         {
             // initialize and configure
@@ -46,7 +58,6 @@ namespace SharpEngine
                 //TriangleMoveDownContinuously();
                 //TriangleShrinkContinuously();
                 //TriangleScaleUpContinously();
-                //TriangleRotateOnSpot();
 
                 UpdateTriangleBuffer();
             }
@@ -54,24 +65,13 @@ namespace SharpEngine
 
         private static void TriangleRotateOnSpot()
         {
-            float angle = 0.01f;
-            float tmp = vertices[0];
-            vertices[0] = (float)(vertices[0] * Math.Cos(angle) + vertices[1] * Math.Sin(angle));
-            vertices[1] = (float)(vertices[1] * Math.Cos(angle) - tmp * Math.Sin(angle));
-
-            tmp = vertices[3];
-            vertices[3] = (float)(vertices[3] * Math.Cos(angle) + vertices[4] * Math.Sin(angle));
-            vertices[4] = (float)(vertices[4] * Math.Cos(angle) - tmp * Math.Sin(angle));
-
-            tmp = vertices[6];
-            vertices[6] = (float)(vertices[6] * Math.Cos(angle) + vertices[7] * Math.Sin(angle));
-            vertices[7] = (float)(vertices[7] * Math.Cos(angle) - tmp * Math.Sin(angle));
+            
         }
 
         private static void Render(Window window)
         {
             //glDrawArrays(GL_LINE_LOOP, 0, 3); //Lined Triangle
-            glDrawArrays(GL_TRIANGLES, 0, vertices.Length/vertexSize); //Filled Triangle
+            glDrawArrays(GL_TRIANGLES, 0, vertices.Length); //Filled Triangle
                                                                        //glDrawArrays(GL_TRIANGLES, 0, 6); //use this to get second triangle
                                                                        //Glfw.SwapBuffers(window); //Don't need this, uses glFlush() Instead.
             Glfw.SwapBuffers(window);
@@ -86,35 +86,36 @@ namespace SharpEngine
 
         private static void TriangleScaleUpContinously()
         {
-            for (var i = 0; i < vertices.Length; i++)
+            for (var i = 0; i < vertices.Length/2; i++)
             {
-                vertices[i] *= 1.00009f;
+                vertices[i].x *= 1.005f;
+                vertices[i].y *= 1.005f;
             }
         }
 
         private static void TriangleShrinkContinuously()
         {
-            for (var i = 0; i < vertices.Length; i++)
+            for (var i = 0; i < vertices.Length/2; i++)
             {
-                vertices[i] *= 0.9999f;
+                vertices[i].x *= 0.995f;
+                vertices[i].y *= 0.995f;
             }
         }
 
         private static void TriangleMoveDownContinuously()
         {
-            for (var i = vertexY; i < vertices.Length; i += vertexSize)
+            for (var i = 0; i < vertices.Length/2; i++)
             {
-                vertices[i] -= transformSpeed;
+                vertices[i].y -= transformSpeed;
             }
         }
 
         private static void TriangleMoveToRightContinuously()
         {
-            for (var i = 0; i < vertices.Length; i++)
+            for (var i = 0; i < vertices.Length/2; i++)
             {
-                if (i % 3 == 0) vertices[i] += transformSpeed;
+                vertices[i].x += transformSpeed;
             }
-
         }
 
         private static unsafe void LoadTriangleIntoBuffer()
@@ -127,16 +128,16 @@ namespace SharpEngine
 
             UpdateTriangleBuffer();
 
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(float), NULL);
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, vertexSize * sizeof(float), NULL);
 
             glEnableVertexAttribArray(0);
         }
 
         static unsafe void UpdateTriangleBuffer()
         {
-            fixed (float* vertex = &vertices[0])
+            fixed (Vector* vertex = &vertices[0])
             {
-                glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.Length, vertex, GL_STATIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(Vector) * vertices.Length, vertex, GL_STATIC_DRAW);
             }
         }
 
