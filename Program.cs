@@ -40,26 +40,42 @@ namespace SharpEngine
             {
                 Glfw.PollEvents(); // react to window changes (position etc.)
                 ClearScreen();
-                Render();
+                Render(window);
 
                 //TriangleMoveToRightContinuously();
                 //TriangleMoveDownContinuously();
                 //TriangleShrinkContinuously();
                 //TriangleScaleUpContinously();
-
-                
+                //TriangleRotateOnSpot();
 
                 UpdateTriangleBuffer();
             }
         }
 
-        private static void Render()
+        private static void TriangleRotateOnSpot()
+        {
+            float angle = 0.01f;
+            float tmp = vertices[0];
+            vertices[0] = (float)(vertices[0] * Math.Cos(angle) + vertices[1] * Math.Sin(angle));
+            vertices[1] = (float)(vertices[1] * Math.Cos(angle) - tmp * Math.Sin(angle));
+
+            tmp = vertices[3];
+            vertices[3] = (float)(vertices[3] * Math.Cos(angle) + vertices[4] * Math.Sin(angle));
+            vertices[4] = (float)(vertices[4] * Math.Cos(angle) - tmp * Math.Sin(angle));
+
+            tmp = vertices[6];
+            vertices[6] = (float)(vertices[6] * Math.Cos(angle) + vertices[7] * Math.Sin(angle));
+            vertices[7] = (float)(vertices[7] * Math.Cos(angle) - tmp * Math.Sin(angle));
+        }
+
+        private static void Render(Window window)
         {
             //glDrawArrays(GL_LINE_LOOP, 0, 3); //Lined Triangle
             glDrawArrays(GL_TRIANGLES, 0, vertices.Length/vertexSize); //Filled Triangle
-                                              //glDrawArrays(GL_TRIANGLES, 0, 6); //use this to get second triangle
-                                              //Glfw.SwapBuffers(window); //Don't need this, uses glFlush() Instead.
-            glFlush();
+                                                                       //glDrawArrays(GL_TRIANGLES, 0, 6); //use this to get second triangle
+                                                                       //Glfw.SwapBuffers(window); //Don't need this, uses glFlush() Instead.
+            Glfw.SwapBuffers(window);
+            //glFlush();
         }
 
         private static void ClearScreen()
@@ -154,7 +170,7 @@ namespace SharpEngine
             Glfw.WindowHint(Hint.Decorated, true);
             Glfw.WindowHint(Hint.OpenglProfile, Profile.Core);
             Glfw.WindowHint(Hint.OpenglForwardCompatible, Constants.True);
-            Glfw.WindowHint(Hint.Doublebuffer, Constants.False);
+            Glfw.WindowHint(Hint.Doublebuffer, Constants.True);
 
             // create and launch a window
             var window = Glfw.CreateWindow(800, 600, "MyWindow", Monitor.None, Window.None);
