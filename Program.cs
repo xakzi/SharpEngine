@@ -22,6 +22,28 @@ namespace SharpEngine
             this.y = y;
             this.z = 0;
         }
+
+        // *
+        public static Vector operator *(Vector v, float f)
+        {
+            return new Vector(v.x * f, v.y * f, v.z * f);
+        }
+
+        // +
+        public static Vector operator +(Vector v, float f)
+        {
+            return new Vector(v.x + f, v.y + f, v.z + f);
+        }
+        // -
+        public static Vector operator -(Vector v, float f)
+        {
+            return new Vector(v.x - f, v.y - f, v.z - f);
+        }
+        // /
+        public static Vector operator /(Vector v, float f)
+        {
+            return new Vector(v.x / f, v.y / f, v.z / f);
+        }
     }
     class Program
     {
@@ -34,14 +56,12 @@ namespace SharpEngine
             new Vector(.6f, .4f),
             new Vector(.5f, .6f)
             };
-
-        const int vertexX = 0;
-        const int vertexY = 1;
-        const int vertexSize = 3;
         
-        static float transformSpeed = 0.0005f;
+        static float transformSpeed = 0.005f;
+        static bool touchWall = false;
         static void Main(string[] args)
         {
+            
             // initialize and configure
             Window window = CreateWindow();
             LoadTriangleIntoBuffer();
@@ -54,18 +74,118 @@ namespace SharpEngine
                 ClearScreen();
                 Render(window);
 
-                //TriangleMoveToRightContinuously();
-                //TriangleMoveDownContinuously();
+                //Bounces
+                //TriangleBouncesRightAndLeftContinously();
+                //TriangleBouncesUpAndDownContinously();
+                //TriangleBouncesRightUpAndLeftDown();
+
+                //Diagonal Lines
+                //TriangleMoveDownLeftContinuously();
+                //TriangleMoveToRightUpContinuously();
+
+                //Stright Lines
+                //TriangleMoveUpContinously();
+                //TriangleMoveDownContinously();
+                //TriangleMoveRightContinously();
+                //TriangleMoveLeftContinously();
+
+                //Shape
                 //TriangleShrinkContinuously();
                 //TriangleScaleUpContinously();
+
+                //Rotation -- Not working properly yet.
+                //TriangleRotateOnSpot();
 
                 UpdateTriangleBuffer();
             }
         }
 
+        private static void TriangleMoveLeftContinously()
+        {
+            for (var i = 0; i < vertices.Length / 2; i++)
+                vertices[i].x -= transformSpeed;
+        }
+
+        private static void TriangleMoveRightContinously()
+        {
+            for (var i = 0; i < vertices.Length / 2; i++)
+                vertices[i].x += transformSpeed;
+        }
+
+        private static void TriangleMoveDownContinously()
+        {
+            for (var i = 0; i < vertices.Length / 2; i++)
+                vertices[i].y -= transformSpeed;
+        }
+
+        private static void TriangleMoveUpContinously()
+        {
+            for (var i = 0; i < vertices.Length / 2; i++)
+                vertices[i].y += transformSpeed;
+        }
         private static void TriangleRotateOnSpot()
         {
-            
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                vertices[i].x = (float)(vertices[i].x * Math.Cos(transformSpeed) + vertices[i].y * Math.Sin(transformSpeed));
+                vertices[i].y = (float)(vertices[i].y * Math.Cos(transformSpeed) - vertices[i].x * Math.Sin(transformSpeed));  
+            }
+        }
+
+        private static void TriangleBouncesUpAndDownContinously()
+        {
+            if (touchWall == false)
+            {
+                TriangleMoveUpContinously();
+                if (vertices[2].y >= 1f)
+                    touchWall = true;
+            }
+            else
+            {
+                TriangleMoveDownContinously();
+                if (vertices[0].y <= -1f)
+                    touchWall = false;
+            }
+        }
+
+        private static void TriangleBouncesRightAndLeftContinously()
+        {
+            if (touchWall == false)
+            {
+                TriangleMoveRightContinously();
+                if (vertices[1].x >= 1f)
+                    touchWall = true;
+            }
+            else
+            {
+                TriangleMoveLeftContinously();
+                if (vertices[0].x <= -1f)
+                    touchWall = false;
+            }
+        }
+
+        private static void TriangleMoveToRightContinously()
+        {
+            for (var i = 0; i < vertices.Length / 2; i++)
+            {
+                vertices[i].x += transformSpeed;
+            }
+        }
+
+        private static void TriangleBouncesRightUpAndLeftDown()
+        {
+            if (touchWall == false)
+            {
+                TriangleMoveToRightUpContinuously();
+                if (vertices[1].x >= 1f)
+                    touchWall = true;
+            }
+            else
+            {
+                TriangleMoveDownLeftContinuously();
+                if (vertices[0].x <= -1f)
+                    touchWall = false;
+            }
         }
 
         private static void Render(Window window)
@@ -88,8 +208,7 @@ namespace SharpEngine
         {
             for (var i = 0; i < vertices.Length/2; i++)
             {
-                vertices[i].x *= 1.005f;
-                vertices[i].y *= 1.005f;
+                vertices[i] *= 1.005f;
             }
         }
 
@@ -97,24 +216,23 @@ namespace SharpEngine
         {
             for (var i = 0; i < vertices.Length/2; i++)
             {
-                vertices[i].x *= 0.995f;
-                vertices[i].y *= 0.995f;
+                vertices[i] /= 1.001f;
             }
         }
 
-        private static void TriangleMoveDownContinuously()
+        private static void TriangleMoveDownLeftContinuously()
         {
             for (var i = 0; i < vertices.Length/2; i++)
             {
-                vertices[i].y -= transformSpeed;
+                vertices[i] -= transformSpeed;
             }
         }
 
-        private static void TriangleMoveToRightContinuously()
+        private static void TriangleMoveToRightUpContinuously()
         {
-            for (var i = 0; i < vertices.Length/2; i++)
+            for (var i = 0; i < vertices.Length / 2; i++)
             {
-                vertices[i].x += transformSpeed;
+                vertices[i] += transformSpeed;
             }
         }
 
@@ -123,12 +241,13 @@ namespace SharpEngine
             // load the vertices into a buffer
             var vertexArray = glGenVertexArray();
             var vertexBuffer = glGenBuffer();
+
             glBindVertexArray(vertexArray);
             glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 
             UpdateTriangleBuffer();
 
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, vertexSize * sizeof(float), NULL);
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(Vector), NULL);
 
             glEnableVertexAttribArray(0);
         }
