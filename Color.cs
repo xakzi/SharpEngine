@@ -2,12 +2,18 @@
 {
     public struct Color
     {
+       // ALL THE COLORS
+        public static readonly Color Pink = new Color(1, 0.6f, 1, 1);
+        public static readonly Color Aqua = new Color(0, 0.6f, 0.6f, 1);
+        public static readonly Color Ocean = new Color(0, 0.2980392f, 0.6f, 1);
+
         public static readonly Color Red = new Color(1, 0, 0, 1);
-        public static readonly Color Green = new Color(0, 1, 0, 1);
-        public static readonly Color Blue = new Color(0, 0, 1, 1);
-        public static readonly Color Purple = new Color(1, 0, 1, 1);
         public static readonly Color Yellow = new Color(1, 1, 0, 1);
-        public static readonly Color Cyan = new Color(0, 1, 1, 1);
+        public static readonly Color Blue = new Color(0, 0, 1, 1);
+
+
+
+
 
 
         public float r, g, b, a;
