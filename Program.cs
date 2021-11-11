@@ -13,23 +13,22 @@ namespace SharpEngine
         (
             new Vertex[]
             {
-                /*new Vertex(new Vector(-.1f, -.1f), Color.Red),
-                new Vertex(new Vector(.1f, -.1f), Color.Green),
-                new Vertex(new Vector(0f, .1f), Color.Blue),*/
+                new Vertex(new Vector(-.1f, -.1f), Color.Pink),
+                new Vertex(new Vector(.1f, -.1f), Color.Aqua),
+                new Vertex(new Vector(0f, .1f), Color.Ocean),
 
-                new Vertex(new Vector(.4f, .2f), Color.Purple),
-                new Vertex(new Vector(.6f, .2f), Color.Cyan),
-                new Vertex(new Vector(.5f, .4f), Color.Yellow)
+                new Vertex(new Vector(.4f, .2f), Color.Red),
+                new Vertex(new Vector(.6f, .2f), Color.Yellow),
+                new Vertex(new Vector(.5f, .4f), Color.Blue)
             }
         );
 
         static float transformSpeed = 0.005f;
         static void Main(string[] args)
         {
-
             // initialize and configure
             Window window = CreateWindow();
-            LoadTriangleIntoBuffer();
+            
             CreateShaderProgram();
             var direction = new Vector(transformSpeed, transformSpeed);
             var multiplier = 0.998f;
@@ -48,6 +47,8 @@ namespace SharpEngine
                     multiplier = minScale;
                 if (triangle.currentScale >= 1.5f)
                     multiplier = maxScale;
+
+                triangle.Rotate();
 
 
                 // 3. Move the Triangle by its Direction
@@ -80,23 +81,6 @@ namespace SharpEngine
         {
             glClearColor(0, 0, 0, 1);
             glClear(GL_COLOR_BUFFER_BIT);
-        }
-
-        private static unsafe void LoadTriangleIntoBuffer()
-        {
-            // load the vertices into a buffer
-            var vertexArray = glGenVertexArray();
-            var vertexBuffer = glGenBuffer();
-
-            glBindVertexArray(vertexArray);
-            glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-
-
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(Vertex), Marshal.OffsetOf(typeof(Vertex), nameof(Vertex.position)));
-            glVertexAttribPointer(1, 4, GL_FLOAT, false, sizeof(Vertex), (void*)(sizeof(Vector)));
-
-            glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
         }
 
         private static void CreateShaderProgram()
