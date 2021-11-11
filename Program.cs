@@ -111,52 +111,7 @@ namespace SharpEngine
                 //TriangleShrinkContinuously();
                 //TriangleShrinkContinuously2();
                 //TriangleScaleUpContinously();
-
-
-
-                //move it to the center
-                // - finding the center of the triangle
-                var min = vertices[3];
-                for (var i = 3; i < vertices.Length; i++)
-                {
-                    min = Vector.Min(min, vertices[i]);
-                }
-                
-                var max = vertices[5];
-                for (var i = 3; i < vertices.Length; i++)
-                {
-                    max = Vector.Max(max, vertices[i]);
-                }
-
-                var center = (min + max) / 2;
-
-                // - moving it by the opposite vector
-                for (var i = 3; i < vertices.Length; i++)
-                {
-                    vertices[i] -= center;
-                }
-                //scale the triangle
-                for (var i = 3; i < vertices.Length; i++)
-                {
-                    vertices[i] *= multiplier;
-                }
-
-                //move it back to where it was
-                for (var i = 3; i < vertices.Length; i++)
-                {
-                    vertices[i] += center;
-                }
-
-                scale *= multiplier;
-
-                if (scale <= 0.5f)
-                {
-                    multiplier = 1.002f;
-                }
-                if(scale >= 1f)
-                {
-                    multiplier = 0.998f;
-                }
+                //TriangleScaleUpAndDownContinously(ref multiplier, ref scale);
 
                 //Rotation -- Not working properly yet.
                 //TriangleRotateOnSpotTriangle1();
@@ -166,6 +121,53 @@ namespace SharpEngine
 
 
                 UpdateTriangleBuffer();
+            }
+        }
+
+        private static void TriangleScaleUpAndDownContinously(ref float multiplier, ref float scale)
+        {
+            //move it to the center
+            // - finding the center of the triangle
+            var min = vertices[3];
+            for (var i = 3; i < vertices.Length; i++)
+            {
+                min = Vector.Min(min, vertices[i]);
+            }
+
+            var max = vertices[5];
+            for (var i = 3; i < vertices.Length; i++)
+            {
+                max = Vector.Max(max, vertices[i]);
+            }
+
+            var center = (min + max) / 2;
+
+            // - moving it by the opposite vector
+            for (var i = 3; i < vertices.Length; i++)
+            {
+                vertices[i] -= center;
+            }
+            //scale the triangle
+            for (var i = 3; i < vertices.Length; i++)
+            {
+                vertices[i] *= multiplier;
+            }
+
+            //move it back to where it was
+            for (var i = 3; i < vertices.Length; i++)
+            {
+                vertices[i] += center;
+            }
+
+            scale *= multiplier;
+
+            if (scale <= 0.5f)
+            {
+                multiplier = 1.002f;
+            }
+            if (scale >= 1f)
+            {
+                multiplier = 0.998f;
             }
         }
 
