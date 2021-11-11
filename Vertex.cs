@@ -9,7 +9,6 @@
         {
             this.position = position;
             this.color = color;
-
         }
     }
 }
