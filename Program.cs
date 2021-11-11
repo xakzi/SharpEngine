@@ -5,32 +5,20 @@ using System.IO;
 
 namespace SharpEngine
 {
-
-    public struct Vertex
-    {
-        public Vector position;
-
-        public Vertex(Vector position)
-        {
-            this.position = position;
-        }
-    }
     class Program
     {
 
         static Vertex[] vertices = new Vertex[] {
-            new Vertex(new Vector(-.1f, -.1f)),
-            new Vertex(new Vector(.1f, -.1f)),
-            new Vertex(new Vector(0f, .1f)),
+            new Vertex(new Vector(-.1f, -.1f), Color.Red),
+            new Vertex(new Vector(.1f, -.1f), Color.Green),
+            new Vertex(new Vector(0f, .1f), Color.Blue),
 
-            new Vertex(new Vector(.4f, .2f)),
-            new Vertex(new Vector(.6f, .2f)),
-            new Vertex(new Vector(.5f, .4f))
+            new Vertex(new Vector(.4f, .2f), Color.Purple),
+            new Vertex(new Vector(.6f, .2f), Color.Cyan),
+            new Vertex(new Vector(.5f, .4f), Color.Yellow)
             };
         
         static float transformSpeed = 0.005f;
-        static bool touchWall = false;
-        static bool touchWall2 = false;
         static void Main(string[] args)
         {
             
@@ -60,12 +48,12 @@ namespace SharpEngine
 
         private static Vector TriangleBounceOnWall(Vector direction)
         {
-            for (var i = 3; i < vertices.Length; i++)
-            {
+            // 3. Move the Triangle by its Direction
+            for (var i = 0; i < vertices.Length; i++)
                 vertices[i].position += direction;
-            }
+
             // 4. Check the X-Bounds of the Screen
-            for (var i = 3; i < vertices.Length; i++)
+            for (var i = 0; i < vertices.Length; i++)
             {
                 if (vertices[i].position.x >= 1 && direction.x > 0 || vertices[i].position.x <= -1 && direction.x < 0)
                 {
@@ -74,7 +62,7 @@ namespace SharpEngine
                 }
             }
             // 5. Check the Y-Bounds of the Screen
-            for (var i = 3; i < vertices.Length; i++)
+            for (var i = 0; i < vertices.Length; i++)
             {
                 if (vertices[i].position.y >= 1 && direction.y > 0 || vertices[i].position.y <= -1 && direction.y < 0)
                 {
@@ -90,252 +78,41 @@ namespace SharpEngine
         {
             //move it to the center
             // - finding the center of the triangle
-            var min = vertices[3].position;
-            for (var i = 3; i < vertices.Length; i++)
-            {
+            var min = vertices[0].position;
+            for (var i = 0; i < vertices.Length; i++)
                 min = Vector.Min(min, vertices[i].position);
-            }
 
-            var max = vertices[5].position;
-            for (var i = 3; i < vertices.Length; i++)
-            {
+            var max = vertices[2].position;
+            for (var i = 0; i < vertices.Length; i++)
                 max = Vector.Max(max, vertices[i].position);
-            }
 
             var center = (min + max) / 2;
 
             // - moving it by the opposite vector
-            for (var i = 3; i < vertices.Length; i++)
-            {
+            for (var i = 0; i < vertices.Length; i++)
                 vertices[i].position -= center;
-            }
+
             //scale the triangle
-            for (var i = 3; i < vertices.Length; i++)
-            {
+            for (var i = 0; i < vertices.Length; i++)
                 vertices[i].position *= multiplier;
-            }
 
             //move it back to where it was
-            for (var i = 3; i < vertices.Length; i++)
-            {
+            for (var i = 0; i < vertices.Length; i++)
                 vertices[i].position += center;
-            }
 
             scale *= multiplier;
 
             if (scale <= 0.5f)
-            {
                 multiplier = 1.002f;
-            }
             if (scale >= 1f)
-            {
                 multiplier = 0.998f;
-            }
         }
-
-       /* private static void TriangleMoveLeftContinously()
-        {
-            for (var i = 0; i < vertices.Length / 2; i++)
-                vertices[i].position -= new Vector(transformSpeed, 0f);
-        }
-        private static void TriangleMoveLeftContinously2()
-        {
-            for (var i = 3; i < vertices.Length; i++)
-                vertices[i].position -= new Vector(transformSpeed, 0f);
-        }
-
-        private static void TriangleMoveRightContinously()
-        {
-            for (var i = 0; i < vertices.Length / 2; i++)
-                vertices[i].position += new Vector(transformSpeed, 0f);
-        }
-        private static void TriangleMoveRightContinously2()
-        {
-            for (var i = 3; i < vertices.Length; i++)
-                vertices[i].position.x += transformSpeed;
-        }
-
-        private static void TriangleMoveDownContinously()
-        {
-            for (var i = 0; i < vertices.Length / 2; i++)
-                vertices[i].position -= new Vector(0f, transformSpeed);
-        }
-
-        private static void TriangleMoveDownContinously2()
-        {
-            for (var i = 3; i < vertices.Length; i++)
-                vertices[i].position -= new Vector(0f, transformSpeed);
-        }
-
-        private static void TriangleMoveUpContinously()
-        {
-            for (var i = 0; i < vertices.Length / 2; i++)
-                vertices[i].position += new Vector(0f, transformSpeed);
-        }
-        private static void TriangleMoveUpContinously2()
-        {
-            for (var i = 3; i < vertices.Length; i++)
-                vertices[i].position += new Vector(0f, transformSpeed);
-        }
-        private static void TriangleRotateOnSpotTriangle1()
-        {
-            float centerX = (vertices[0].position.x + vertices[1].position.x + vertices[2].position.x) / 3;
-            float centerY = (vertices[0].position.y + vertices[1].position.y + vertices[2].position.y) / 3;
-            for (var i = 0; i < vertices.Length/2; i++)
-            {
-                //vertices[i].x = (float)(vertices[i].x * Math.Cos(transformSpeed) + vertices[i].y * Math.Sin(transformSpeed));
-                //vertices[i].y = (float)(vertices[i].y * Math.Cos(transformSpeed) - vertices[i].x * Math.Sin(transformSpeed));
-                vertices[i].position.x = (float)(Math.Cos(transformSpeed) * (vertices[i].position.x - centerX) + Math.Sin(transformSpeed) * (vertices[i].position.y - centerY) + centerX);
-                vertices[i].position.y = (float)(Math.Cos(transformSpeed) * (vertices[i].position.y - centerY) - Math.Sin(transformSpeed) * (vertices[i].position.x - centerX) + centerY);
-
-            }
-        }
-        private static void TriangleRotateOnSpotTriangle2()
-        {
-            float centerX = (vertices[3].position.x + vertices[4].position.x + vertices[5].position.x) / 3;
-            float centerY = (vertices[3].position.y + vertices[4].position.y + vertices[5].position.y) / 3;
-            for (var i = 3; i < vertices.Length; i++)
-            {
-                //vertices[i].x = (float)(vertices[i].x * Math.Cos(transformSpeed) + vertices[i].y * Math.Sin(transformSpeed));
-                //vertices[i].y = (float)(vertices[i].y * Math.Cos(transformSpeed) - vertices[i].x * Math.Sin(transformSpeed));
-                vertices[i].position.x = (float)(Math.Cos(transformSpeed) * (vertices[i].position.x - centerX) + Math.Sin(transformSpeed) * (vertices[i].position.y - centerY) + centerX);
-                vertices[i].position.y = (float)(Math.Cos(transformSpeed) * (vertices[i].position.y - centerY) - Math.Sin(transformSpeed) * (vertices[i].position.x - centerX) + centerY);
-
-            }
-        }
-
-
-        private static void TriangleBouncesUpAndDownContinously()
-        {
-            if (touchWall == false)
-            {
-                TriangleMoveUpContinously();
-                for (var i = 0; i < vertices.Length / 2; i++)
-                    if (vertices[i].position.y >= 1f)
-                    touchWall = true;
-            }
-            else
-            {
-                TriangleMoveDownContinously();
-                for (var i = 0; i < vertices.Length / 2; i++)
-                    if (vertices[i].position.y <= -1f)
-                    touchWall = false;
-            }
-        }
-
-        private static void TriangleBouncesUpAndDownContinously2()
-        {
-            if (touchWall2 == false)
-            {
-                TriangleMoveUpContinously2();
-                for (var i = 3; i < vertices.Length; i++)
-                    if (vertices[i].position.y >= 1f)
-                        touchWall2 = true;
-            }
-            else
-            {
-                TriangleMoveDownContinously2();
-                for (var i = 3; i < vertices.Length; i++)
-                    if (vertices[i].position.y <= -1f)
-                        touchWall2 = false;
-            }
-        }
-
-        private static void TriangleBouncesRightAndLeftContinously()
-        {
-            if (touchWall == false)
-            {
-                TriangleMoveRightContinously();
-                for (var i = 0; i < vertices.Length / 2; i++)
-                    if (vertices[i].position.x >= 1f)
-                    touchWall = true;
-            }
-            else
-            {
-                TriangleMoveLeftContinously();
-                for (var i = 0; i < vertices.Length / 2; i++)
-                    if (vertices[i].position.x <= -1f)
-                    touchWall = false;
-            }
-        }
-
-        private static void TriangleBouncesRightAndLeftContinously2()
-        {
-            if (touchWall2 == false)
-            {
-                TriangleMoveRightContinously2();
-                for (var i = 3; i < vertices.Length; i++)
-                    if (vertices[i].position.x >= 1f)
-                        touchWall2 = true;
-            }
-            else
-            {
-                TriangleMoveLeftContinously2();
-                for (var i = 3; i < vertices.Length; i++)
-                    if (vertices[i].position.x <= -1f)
-                        touchWall2 = false;
-            }
-        }
-
-        private static void TriangleMoveToRightContinously()
-        {
-            for (var i = 0; i < vertices.Length / 2; i++)
-            {
-                vertices[i].position += new Vector(transformSpeed, 0f);
-            }
-        }
-
-        private static void TriangleScaleUpContinously()
-        {
-            for (var i = 0; i < vertices.Length / 2; i++)
-            {
-                vertices[i].position *= 1.005f;
-            }
-        }
-
-        private static void TriangleShrinkContinuously()
-        {
-            for (var i = 0; i < vertices.Length / 2; i++)
-                vertices[i].position /= 1.0001f;
-        }
-        private static void TriangleShrinkContinuously2()
-        {
-            for (var i = 3; i < vertices.Length; i++)
-                vertices[i].position /= 1.0001f;
-        }
-
-        private static void TriangleMoveDownLeftContinuously()
-        {
-            for (var i = 0; i < vertices.Length / 2; i++)
-                vertices[i].position -= new Vector(transformSpeed, transformSpeed);
-        }
-        private static void TriangleMoveDownLeftContinuously2()
-        {
-            for (var i = 3; i < vertices.Length; i++)
-                vertices[i].position -= new Vector(transformSpeed, transformSpeed);
-        }
-
-        private static void TriangleMoveToRightUpContinuously()
-        {
-            for (var i = 0; i < vertices.Length / 2; i++)
-            {
-                vertices[i].position += new Vector(transformSpeed, transformSpeed);
-            }
-        }
-        private static void TriangleMoveToRightUpContinuously2()
-        {
-            for (var i = 3; i < vertices.Length; i++)
-            {
-                vertices[i].position += new Vector(transformSpeed, transformSpeed);
-            }
-        }*/
 
         private static void Render(Window window)
         {
             //glDrawArrays(GL_LINE_LOOP, 0, 3); //Lined Triangle
             glDrawArrays(GL_TRIANGLES, 0, vertices.Length); //Filled Triangle
-                                                                       //glDrawArrays(GL_TRIANGLES, 0, 6); //use this to get second triangle
-                                                                       //Glfw.SwapBuffers(window); //Don't need this, uses glFlush() Instead.
+
             Glfw.SwapBuffers(window);
             //glFlush();
         }
@@ -357,16 +134,18 @@ namespace SharpEngine
 
             UpdateTriangleBuffer();
 
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(Vector), NULL);
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(Vertex), NULL);
+            glVertexAttribPointer(1, 4, GL_FLOAT, false, sizeof(Vertex), (void*)(sizeof(Vector)));
 
             glEnableVertexAttribArray(0);
+            glEnableVertexAttribArray(1);
         }
 
         static unsafe void UpdateTriangleBuffer()
         {
-            fixed (Vector* vertex = &vertices[0].position)
+            fixed (Vertex* vertex = &vertices[0])
             {
-                glBufferData(GL_ARRAY_BUFFER, sizeof(Vector) * vertices.Length, vertex, GL_STATIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.Length, vertex, GL_STATIC_DRAW);
             }
         }
 
@@ -374,12 +153,12 @@ namespace SharpEngine
         {
             // create vertex shader
             var vertexShader = glCreateShader(GL_VERTEX_SHADER);
-            glShaderSource(vertexShader, File.ReadAllText("shaders/screen-coordinates.vert"));
+            glShaderSource(vertexShader, File.ReadAllText("shaders/position-color.vert"));
             glCompileShader(vertexShader);
 
             //create fragment shader
             var fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-            glShaderSource(fragmentShader, File.ReadAllText("shaders/green.frag"));
+            glShaderSource(fragmentShader, File.ReadAllText("shaders/vertex-color.frag"));
             glCompileShader(fragmentShader);
 
             // create shader program - rendering pipeline
