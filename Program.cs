@@ -21,7 +21,7 @@ namespace SharpEngine
 
         static Triangle triangle = new Triangle(0.15f, 0.15f, new Vector(-.5f, -.5f));
         static Rectangle rectangle = new Rectangle(0.15f, 0.15f, new Vector(.5f, .5f));
-        static Circle circle = new Circle((float)180, new Vector(1f, 1f));
+        static Circle circle = new Circle(.15f, new Vector(0, 0));
 
         static float transformSpeed = 0.005f;
         static void Main(string[] args)
