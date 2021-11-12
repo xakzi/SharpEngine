@@ -8,33 +8,21 @@ namespace SharpEngine
 {
     class Circle : Shape
     {
-        public Circle(float radius, Vector position) : base(new Vertex[360])
+        public Circle(float radius, Vector position) : base(new Vertex[36])
         {
+            float theta = MathF.PI * 2 / 36;
+
+            Color newColor = Color.Aqua;
+            vertices[0].position = position;
+            //vertices[0].color = Color.Blue;
             for (var i = 0; i < vertices.Length; i++)
             {
-                float theta = i * MathF.PI / radius;
+                if (i % 9 < 3) newColor = Color.Red;
+                else if (i % 9 >= 3 && i % 9 < 6) newColor = Color.Pink;
+                else newColor = Color.Blue;
 
-                /*float theta = 2.0f * (float)Math.PI * i / radius;
-                float x = radius * MathF.Cos(theta);
-                float y = radius * MathF.Sin(theta);
-                vertices[i] = new Vertex(new Vector(position.x * y, position.y * x), Color.Blue);*/
-                vertices[i] = new Vertex(new Vector((position.x * MathF.Cos(theta))/8, (position.y * MathF.Sin(theta))/8), Color.Blue);
+                vertices[i] = new Vertex(new Vector(radius * MathF.Cos(theta * (i - 1))+position.x, radius * MathF.Sin(theta * (i - 1))+position.y), newColor);
             }
-
-            /*
-             for (int i = 0; i < vertices.Length; i++)
-            {
-                var currentangle = Math.Atan2(vertices[i].position.y, vertices[i].position.x);
-                var currentmagnitude = MathF.Sqrt(MathF.Pow(vertices[i].position.x, 2) + MathF.Pow(vertices[i].position.y, 2));
-                var newX = MathF.Cos((float)currentangle + angle) * currentmagnitude;
-                var newY = MathF.Sin((float)currentangle + angle) * currentmagnitude; 
-                vertices[i].position = new Vector(newX, newY);                
-            }
-             * */
-
-            // vertices[0] = new Vertex(new Vector(position.x - width / 2, position.y - height / 2), Color.Red);
-            //vertices[1] = new Vertex(new Vector(position.x + width / 2, position.y - height / 2), Color.Pink);
-            //vertices[2] = new Vertex(new Vector(position.x, position.y + height / 2), Color.Blue);
         }
     }
 }
