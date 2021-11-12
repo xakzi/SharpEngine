@@ -9,7 +9,7 @@ namespace SharpEngine
 
     class Program
     {
-        static Triangle triangle = new Triangle
+        /*static Shape triangle = new Shape
         (
             new Vertex[]
             {
@@ -17,7 +17,9 @@ namespace SharpEngine
                 new Vertex(new Vector(.1f, -.1f), Color.Aqua),
                 new Vertex(new Vector(0f, .1f), Color.Ocean)
             }
-        );
+        );*/
+
+        static Triangle triangle = new Triangle(0.15f, 0.15f, new Vector(0, 0));
 
         static float transformSpeed = 0.005f;
         static void Main(string[] args)
