@@ -19,7 +19,8 @@ namespace SharpEngine
             }
         );*/
 
-        static Triangle triangle = new Triangle(0.15f, 0.15f, new Vector(0, 0));
+        static Triangle triangle = new Triangle(0.15f, 0.15f, new Vector(-.5f, -.5f));
+        static Rectangle rectangle = new Rectangle(0.15f, 0.15f, new Vector(0, 0));
 
         static float transformSpeed = 0.005f;
         static void Main(string[] args)
@@ -39,21 +40,27 @@ namespace SharpEngine
                 ClearScreen();
                 Render(window);
 
-                /*triangle.Scale(multiplier);
+                rectangle.Scale(multiplier);
+                if (rectangle.currentScale <= 0.5f) { multiplier = minScale; }
+                if (rectangle.currentScale >= 1.5f) { multiplier = maxScale; }
+                rectangle.Rotate();
+                rectangle.Move(direction);
+                if(rectangle.GetMaxBounds().x >= 1 && direction.x > 0 || rectangle.GetMinBounds().x <= -1 && direction.x < 0)
+                {
+                    direction.x *= -1;
+                }
 
-                if (triangle.currentScale <= 0.5f)
-                    multiplier = minScale;
-                if (triangle.currentScale >= 1.5f)
-                    multiplier = maxScale;*/
+                if (rectangle.GetMaxBounds().y >= 1 && direction.y > 0 || rectangle.GetMinBounds().y <= -1 && direction.y < 0)
+                {
+                    direction.y *= -1;
+                }
 
+                triangle.Scale(multiplier);
+                if (triangle.currentScale <= 0.5f) { multiplier = minScale; }
+                if (triangle.currentScale >= 1.5f) { multiplier = maxScale; }
                 triangle.Rotate();
-
-                
-                // 3. Move the Triangle by its Direction
                 triangle.Move(direction);
-
-                // 4. Check the X-Bounds of the Screen
-                if(triangle.GetMaxBounds().x >= 1 && direction.x > 0 || triangle.GetMinBounds().x <= -1 && direction.x < 0)
+                if (triangle.GetMaxBounds().x >= 1 && direction.x > 0 || triangle.GetMinBounds().x <= -1 && direction.x < 0)
                 {
                     direction.x *= -1;
                 }
@@ -69,6 +76,7 @@ namespace SharpEngine
         private static void Render(Window window)
         {
             //glDrawArrays(GL_LINE_LOOP, 0, 3); //Lined Triangle
+            rectangle.Render();
             triangle.Render();
 
             Glfw.SwapBuffers(window);
