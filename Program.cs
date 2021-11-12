@@ -15,11 +15,7 @@ namespace SharpEngine
             {
                 new Vertex(new Vector(-.1f, -.1f), Color.Pink),
                 new Vertex(new Vector(.1f, -.1f), Color.Aqua),
-                new Vertex(new Vector(0f, .1f), Color.Ocean),
-
-                new Vertex(new Vector(.4f, .2f), Color.Red),
-                new Vertex(new Vector(.6f, .2f), Color.Yellow),
-                new Vertex(new Vector(.5f, .4f), Color.Blue)
+                new Vertex(new Vector(0f, .1f), Color.Ocean)
             }
         );
 

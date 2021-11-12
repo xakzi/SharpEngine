@@ -50,5 +50,10 @@ namespace SharpEngine
         {
             return new Vector(MathF.Min(a.x, b.x), MathF.Min(a.y, b.y));
         }
+
+        public static float operator *(Vector v, Vector b)
+        {
+            return v.x * b.x + v.y * b.y;
+        }
     }
 }
