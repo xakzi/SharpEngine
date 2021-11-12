@@ -6,11 +6,11 @@ using static OpenGL.Gl;
 
 namespace SharpEngine
 {
-    public class Triangle
+    public class Shape
     {
-        Vertex[] vertices;
+        public Vertex[] vertices;
         public float currentScale { get; private set; }
-        public Triangle(Vertex[] vertices)
+        public Shape(Vertex[] vertices)
         {
             this.vertices = vertices;
             currentScale = 1f;
