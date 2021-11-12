@@ -19,9 +19,10 @@ namespace SharpEngine
             }
         );*/
 
-        static Triangle triangle = new Triangle(0.15f, 0.15f, new Vector(-.5f, -.5f));
-        static Rectangle rectangle = new Rectangle(0.15f, 0.15f, new Vector(.5f, .5f));
-        static Circle circle = new Circle(.15f, new Vector(0, 0));
+        static Triangle triangle = new Triangle(.15f, .15f, new Vector(.2f, .2f));
+        static Rectangle rectangle = new Rectangle(.15f, .15f, new Vector(-.2f, -.2f));
+        static Circle circle = new Circle(.1f, new Vector(.2f, -.2f));
+        static Cone cone = new Cone(.1f, .1f, new Vector(-.2f, .2f));
 
         static float transformSpeed = 0.005f;
         static void Main(string[] args)
@@ -41,12 +42,17 @@ namespace SharpEngine
                 ClearScreen();
                 Render(window);
 
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
                 rectangle.Scale(multiplier);
                 if (rectangle.currentScale <= 0.5f) { multiplier = minScale; }
                 if (rectangle.currentScale >= 1.5f) { multiplier = maxScale; }
-                rectangle.Rotate();
-                rectangle.Move(direction);
-                if(rectangle.GetMaxBounds().x >= 1 && direction.x > 0 || rectangle.GetMinBounds().x <= -1 && direction.x < 0)
+                rectangle.Move(direction); //works as inteded.
+
+                //Actually only needs half of this to work, since Triangle is touching the other side -- fix this in the future :)
+                //need to create a direction change in Shape.cs and put it in a method
+                //where it gives "this.direction" so the direction changes shape by shape
+                if (rectangle.GetMaxBounds().x >= 1 && direction.x > 0 || rectangle.GetMinBounds().x <= -1 && direction.x < 0)
                 {
                     direction.x *= -1;
                 }
@@ -55,12 +61,16 @@ namespace SharpEngine
                 {
                     direction.y *= -1;
                 }
+                rectangle.Rotate(); //works as intended.
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 triangle.Scale(multiplier);
                 if (triangle.currentScale <= 0.5f) { multiplier = minScale; }
                 if (triangle.currentScale >= 1.5f) { multiplier = maxScale; }
-                triangle.Rotate();
-                triangle.Move(direction);
+                triangle.Move(direction); //is not really needed as move, moves all shapes that exists lol --Fix this in the future :)
+
+                //Actually only needs half of this to work, since rectangle is touching the other side -- fix this in the future :)
                 if (triangle.GetMaxBounds().x >= 1 && direction.x > 0 || triangle.GetMinBounds().x <= -1 && direction.x < 0)
                 {
                     direction.x *= -1;
@@ -70,12 +80,49 @@ namespace SharpEngine
                 {
                     direction.y *= -1;
                 }
+                triangle.Rotate(); //works as intended.
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 circle.Scale(multiplier);
                 if(circle.currentScale <= 0.5f) { multiplier = minScale; }
                 if(circle.currentScale >= 1.5f) { multiplier = minScale; }
-                circle.Move(direction);
+                
+                circle.Move(direction);  //is not really needed as move, moves all shapes that exists lol --Fix this in the future :)
 
+                //This check is not needed for circle as it moves with the other shapens and only rectangle & triangle is touching the walls -- fix this in the future :)
+                if (circle.GetMaxBounds().x >= 1 && direction.x > 0 || circle.GetMinBounds().x <= -1 && direction.x < 0)
+                {
+                    direction.x *= -1;
+                }
+
+                if (circle.GetMaxBounds().y >= 1 && direction.y > 0 || circle.GetMinBounds().y <= -1 && direction.y < 0)
+                {
+                    direction.y *= -1;
+                }
+                circle.Rotate(); //works as intended.
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                cone.Scale(multiplier);
+                if (cone.currentScale <= 0.5f) { multiplier = minScale; }
+                if (cone.currentScale >= 1.5f) { multiplier = minScale; }
+
+                cone.Move(direction);  //is not really needed as move, moves all shapes that exists lol --Fix this in the future :)
+
+                //This check is not needed for circle as it moves with the other shapens and only rectangle & triangle is touching the walls -- fix this in the future :)
+                if (cone.GetMaxBounds().x >= 1 && direction.x > 0 || cone.GetMinBounds().x <= -1 && direction.x < 0)
+                {
+                    direction.x *= -1;
+                }
+
+                if (cone.GetMaxBounds().y >= 1 && direction.y > 0 || cone.GetMinBounds().y <= -1 && direction.y < 0)
+                {
+                    direction.y *= -1;
+                }
+                cone.Rotate(); //works as intended.
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
         }
 
@@ -85,6 +132,7 @@ namespace SharpEngine
             rectangle.Render();
             triangle.Render();
             circle.Render();
+            cone.Render();
 
             Glfw.SwapBuffers(window);
             //glFlush();
