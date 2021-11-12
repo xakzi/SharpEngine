@@ -37,16 +37,16 @@ namespace SharpEngine
                 ClearScreen();
                 Render(window);
 
-                triangle.Scale(multiplier);
+                /*triangle.Scale(multiplier);
 
                 if (triangle.currentScale <= 0.5f)
                     multiplier = minScale;
                 if (triangle.currentScale >= 1.5f)
-                    multiplier = maxScale;
+                    multiplier = maxScale;*/
 
                 triangle.Rotate();
 
-
+                
                 // 3. Move the Triangle by its Direction
                 triangle.Move(direction);
 

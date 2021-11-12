@@ -59,15 +59,19 @@ namespace SharpEngine
 
         public void Rotate()
         {
+            
             float angle = 0.003f;
             var center = GetCenter();
-            Vector rotation1 = new Vector(MathF.Cos(angle), MathF.Sin(angle));
-            Vector rotation2 = new Vector(-MathF.Sin(angle), MathF.Cos(angle));
-            for (int i = 0; i < this.vertices.Length; i++)
+            Move(center * -1);
+            for (int i = 0; i < vertices.Length; i++)
             {
-                Vector vector2 = this.vertices[i].position - center;
-                this.vertices[i].position = new Vector(rotation1 * vector2, rotation2 * vector2) + center;
+                var currentangle = Math.Atan2(vertices[i].position.y, vertices[i].position.x);
+                var currentmagnitude = MathF.Sqrt(MathF.Pow(vertices[i].position.x, 2) + MathF.Pow(vertices[i].position.y, 2));
+                var newX = MathF.Cos((float)currentangle + angle) * currentmagnitude;
+                var newY = MathF.Sin((float)currentangle + angle) * currentmagnitude; 
+                vertices[i].position = new Vector(newX, newY);                
             }
+            Move(center);
         }
 
         public void Move(Vector direction)
