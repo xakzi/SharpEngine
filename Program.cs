@@ -20,7 +20,8 @@ namespace SharpEngine
         );*/
 
         static Triangle triangle = new Triangle(0.15f, 0.15f, new Vector(-.5f, -.5f));
-        static Rectangle rectangle = new Rectangle(0.15f, 0.15f, new Vector(0, 0));
+        static Rectangle rectangle = new Rectangle(0.15f, 0.15f, new Vector(.5f, .5f));
+        static Circle circle = new Circle((float)180, new Vector(1f, 1f));
 
         static float transformSpeed = 0.005f;
         static void Main(string[] args)
@@ -70,6 +71,11 @@ namespace SharpEngine
                     direction.y *= -1;
                 }
 
+                circle.Scale(multiplier);
+                if(circle.currentScale <= 0.5f) { multiplier = minScale; }
+                if(circle.currentScale >= 1.5f) { multiplier = minScale; }
+                circle.Move(direction);
+
             }
         }
 
@@ -78,6 +84,7 @@ namespace SharpEngine
             //glDrawArrays(GL_LINE_LOOP, 0, 3); //Lined Triangle
             rectangle.Render();
             triangle.Render();
+            circle.Render();
 
             Glfw.SwapBuffers(window);
             //glFlush();

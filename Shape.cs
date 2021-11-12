@@ -86,7 +86,7 @@ namespace SharpEngine
             {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.Length, vertex, GL_STATIC_DRAW);
             }
-            glDrawArrays(GL_TRIANGLES, 0, vertices.Length);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.Length);
         }
 
         private static unsafe void LoadTriangleIntoBuffer()
