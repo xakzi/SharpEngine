@@ -54,28 +54,34 @@ namespace SharpEngine
                     var walkDirection = new Vector();
                     if (window.GetKey(Keys.W))
                     {
-                        walkDirection += new Vector(0, 1);
+                        walkDirection += shape.Transform.Forward;
                         //shape.Transform.Position += new Vector(0f, movementSpeed * fixedDeltaTime);
                     }
                     if (window.GetKey(Keys.S))
                     {
-                        walkDirection += new Vector(0, -1);
+                        walkDirection += shape.Transform.Backward;
                         //shape.Transform.Position += new Vector(0f, -movementSpeed * fixedDeltaTime);
                     }
                     if (window.GetKey(Keys.A))
                     {
-                        walkDirection += new Vector(-1, 0);
+                        //walkDirection += Vector.Left;
                         //shape.Transform.Position += new Vector(-movementSpeed * fixedDeltaTime, 0 );
+                        var rotation = shape.Transform.Rotation;
+                        rotation.z += 2 * MathF.PI * fixedDeltaTime;
+                        shape.Transform.Rotation = rotation;
                     }
                     if (window.GetKey(Keys.D))
                     {
-                        walkDirection += new Vector(1, 0);
+                        //walkDirection += Vector.Right;
                         //shape.Transform.Position += new Vector(movementSpeed * fixedDeltaTime, 0);
+                        var rotation = shape.Transform.Rotation;
+                        rotation.z -= 2 * MathF.PI * fixedDeltaTime;
+                        shape.Transform.Rotation = rotation;
                     }
                     if(window.GetKey(Keys.Q))
                     {
                         var rotation = shape.Transform.Rotation;
-                        rotation.z += MathF.PI * fixedDeltaTime;
+                        rotation.z += 2 * MathF.PI * fixedDeltaTime;
                         shape.Transform.Rotation = rotation;
                     }
                     if (window.GetKey(Keys.E))
