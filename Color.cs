@@ -1,3 +1,5 @@
+using System;
+
 namespace SharpEngine {
 	public struct Color {
 
@@ -6,6 +8,7 @@ namespace SharpEngine {
 		public static readonly Color Blue = new Color(0, 0, 1, 1);
 		public static readonly Color White = new Color(1, 1, 1, 1);
 		public static readonly Color Black = new Color(0, 0, 0, 1);
+		public static readonly Color Gray = new Color(.5f, .5f, .5f, 1);
 
 		public float r, g, b, a;
 

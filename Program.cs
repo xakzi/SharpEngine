@@ -102,20 +102,17 @@ namespace SharpEngine
             {
                 //2+
                 circle.SetColor(Color.Black);
-                Console.WriteLine("the circle is now Black!");
 
             }
             else if (angle < 1)
             {
                 //1 - 2
-                circle.SetColor(Color.Red);
-                Console.WriteLine("the circle is now Red!.. should be white and color the whole circle.");
+                circle.SetColor(Color.White);
             }
             else
             {
                 //0 - 1
-                circle.SetColor(Color.White);
-                Console.WriteLine("the circle is now white!.. should only color half of the circle D:");
+                circle.SetColor(Color.Gray);
             }
         }
 
@@ -125,12 +122,10 @@ namespace SharpEngine
             //if (Vector.Dot(rectangle.Transform.Forward, triangle.Transform.Forward) < 0) //change color on triangles right side
             {
                 rectangle.SetColor(Color.Green);
-                Console.WriteLine("Rectangle is Green!");
             }
             else
             {
                 rectangle.SetColor(Color.Red);
-                Console.WriteLine("Rectangle is Red!");
             }
         }
     }
