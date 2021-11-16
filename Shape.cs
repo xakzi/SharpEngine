@@ -1,109 +1,66 @@
-﻿using System;
 using System.Runtime.InteropServices;
-using OpenGL;
-using GLFW;
 using static OpenGL.Gl;
 
-namespace SharpEngine
-{
-    public class Shape
-    {
-        public Vertex[] vertices;
-        public float currentScale { get; private set; }
-        public Shape(Vertex[] vertices)
-        {
-            this.vertices = vertices;
-            currentScale = 1f;
-            LoadTriangleIntoBuffer();
-        }
-
-        public Vector GetMaxBounds()
-        {
-            var max = vertices[2].position;
-            for (var i = 0; i < vertices.Length; i++)
-                max = Vector.Max(max, vertices[i].position);
-
-            return max;
-        }
-
-        public Vector GetCenter()
-        {
-            return (GetMinBounds() + GetMaxBounds()) / 2;
-        }
-
-        public Vector GetMinBounds()
-        {
-            var min = vertices[0].position;
-            for (var i = 0; i < vertices.Length; i++)
-                min = Vector.Min(min, vertices[i].position);
-
-            return min;
-        }
-
-        public void Scale(float multiplier)
-        {
-            // We first move the triangle to the center, to avoid 
-            // the triangle moving around while scaling
-            // Then, we move it back again
-            var center = GetCenter();
-
-            Move(center*-1);
-
-            for (var i = 0; i < vertices.Length; i++)
-                vertices[i].position *= multiplier;
-
-            Move(center);
-
-            currentScale *= multiplier;
-        }
-
-        public void Rotate()
-        {
+namespace SharpEngine {
+	public class Shape {
             
-            float angle = 0.003f;
-            var center = GetCenter();
-            Move(center * -1);
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                var currentangle = Math.Atan2(vertices[i].position.y, vertices[i].position.x);
-                var currentmagnitude = MathF.Sqrt(MathF.Pow(vertices[i].position.x, 2) + MathF.Pow(vertices[i].position.y, 2));
-                var newX = MathF.Cos((float)currentangle + angle) * currentmagnitude;
-                var newY = MathF.Sin((float)currentangle + angle) * currentmagnitude; 
-                vertices[i].position = new Vector(newX, newY);                
-            }
-            Move(center);
-        }
+		Vertex[] vertices;
+		uint vertexArray;
+		uint vertexBuffer;
 
-        public void Move(Vector direction)
-        {
-            for (var i = 0; i < vertices.Length; i++)
-                vertices[i].position += direction;
-        }
+		public Transform Transform { get; }
+		public Material material;
+            
+		public Shape(Vertex[] vertices, Material material) {
+			this.vertices = vertices;
+			this.material = material;
+			LoadTriangleIntoBuffer();
+			this.Transform = new Transform();
+		}
+		
+		 void LoadTriangleIntoBuffer() {
+			vertexArray = glGenVertexArray();
+			vertexBuffer = glGenBuffer();
+			glBindVertexArray(vertexArray);
+			glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+			glVertexAttribPointer(0, 3, GL_FLOAT, false, Marshal.SizeOf<Vertex>(), Marshal.OffsetOf(typeof(Vertex), nameof(Vertex.position)));
+			glVertexAttribPointer(1, 4, GL_FLOAT, false, Marshal.SizeOf<Vertex>(), Marshal.OffsetOf(typeof(Vertex), nameof(Vertex.color)));
+			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(1);
+			glBindVertexArray(0);
+		}
 
-        public unsafe void Render()
-        {
-            fixed (Vertex* vertex = &vertices[0])
-            {
-                glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.Length, vertex, GL_STATIC_DRAW);
-            }
-            glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.Length);
-        }
+		public Vector GetMinBounds() {
+			var min = this.Transform.Matrix * this.vertices[0].position;
+			for (var i = 1; i < this.vertices.Length; i++) {
+				min = Vector.Min(min, this.Transform.Matrix * this.vertices[i].position);
+			}
+			return min;
+		}
+            
+		public Vector GetMaxBounds() {
+			var max = this.Transform.Matrix * this.vertices[0].position;
+			for (var i = 1; i < this.vertices.Length; i++) {
+				max = Vector.Max(max, this.Transform.Matrix * this.vertices[i].position);
+			}
 
-        private static unsafe void LoadTriangleIntoBuffer()
-        {
-            // load the vertices into a buffer
-            var vertexArray = glGenVertexArray();
-            var vertexBuffer = glGenBuffer();
+			return max;
+		}
 
-            glBindVertexArray(vertexArray);
-            glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+		public Vector GetCenter() {
+			return (GetMinBounds() + GetMaxBounds()) / 2;
+		}
 
-
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(Vertex), Marshal.OffsetOf(typeof(Vertex), nameof(Vertex.position)));
-            glVertexAttribPointer(1, 4, GL_FLOAT, false, sizeof(Vertex), (void*)(sizeof(Vector)));
-
-            glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
-        }
-    }
+		public unsafe void Render() {
+			this.material.Use();
+			this.material.SetTransform(this.Transform.Matrix);
+			glBindVertexArray(vertexArray);
+			glBindBuffer(GL_ARRAY_BUFFER, this.vertexBuffer);
+			fixed (Vertex* vertex = &this.vertices[0]) {
+				glBufferData(GL_ARRAY_BUFFER, Marshal.SizeOf<Vertex>() * this.vertices.Length, vertex, GL_DYNAMIC_DRAW);
+			}
+			glDrawArrays(GL_TRIANGLES, 0, this.vertices.Length);
+			glBindVertexArray(0);
+		}
+	}
 }

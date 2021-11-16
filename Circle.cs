@@ -1,28 +1,28 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using OpenGL;
-using GLFW;
-using static OpenGL.Gl;
+using System;
 
-namespace SharpEngine
-{
-    class Circle : Shape
-    {
-        public Circle(float radius, Vector position) : base(new Vertex[48])
-        {
+namespace SharpEngine {
+	public class Circle : Shape {
 
-            float theta = MathF.PI * 2 / (48 - 2);
+		public Circle(Material material) : base(CreateCircle(), material) {
+		}
+		
+		static Vertex[] CreateCircle() {
+			const int numberOfSegments = 8;
+			const int verticesPerSegment = 3;
+			const float scale = .1f;
+			Vertex[] result = new Vertex[numberOfSegments*verticesPerSegment];
+			const float circleRadians = MathF.PI * 2;
+			var oldAngle = 0f;
+			for (int i = 0; i < numberOfSegments; i++) {
+				int currentVertex = i * verticesPerSegment;
+				var newAngle = circleRadians / numberOfSegments * (i + 1);
+				result[currentVertex++] = new Vertex(new Vector(), Color.Blue);
+				result[currentVertex++] = new Vertex(new Vector(MathF.Cos(oldAngle), MathF.Sin(oldAngle))*scale, Color.Green);
+				result[currentVertex] = new Vertex(new Vector(MathF.Cos(newAngle), MathF.Sin(newAngle))*scale, Color.Red);
+				oldAngle = newAngle;
+			}
 
-                Color newColor;
-                vertices[0].position = position;
-                for (var i = 0; i < vertices.Length; i++)
-                {
-                    if (i % 9 < 3) newColor = Color.Red;
-                    else if (i % 9 >= 3 && i % 9 < 6) newColor = Color.Pink;
-                    else newColor = Color.Aqua;
-
-                    vertices[i] = new Vertex(new Vector(radius * MathF.Cos(theta * (i - 1)) + vertices[0].position.x, radius * MathF.Sin(theta * (i - 1)) + vertices[0].position.y), newColor);
-                }
-        }
-    }
+			return result;
+		}
+	}
 }
