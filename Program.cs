@@ -71,7 +71,18 @@ namespace SharpEngine
                     {
                         walkDirection += new Vector(1, 0);
                         //shape.Transform.Position += new Vector(movementSpeed * fixedDeltaTime, 0);
-                        //shape.Transform.Rotate(-movementSpeed);
+                    }
+                    if(window.GetKey(Keys.Q))
+                    {
+                        var rotation = shape.Transform.Rotation;
+                        rotation.z += MathF.PI * fixedDeltaTime;
+                        shape.Transform.Rotation = rotation;
+                    }
+                    if (window.GetKey(Keys.E))
+                    {
+                        var rotation = shape.Transform.Rotation;
+                        rotation.z -= 2 * MathF.PI * fixedDeltaTime;
+                        shape.Transform.Rotation = rotation;
                     }
 
                     walkDirection = walkDirection.Normalize();
