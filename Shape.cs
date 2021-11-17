@@ -10,7 +10,20 @@ namespace SharpEngine {
 
 		public Transform Transform { get; }
 		public Material material;
-		public float mass = 1f;
+		float mass = 1f;
+		float massInverse = 1f;
+		public float Mass
+		{
+			get => this.mass;
+			set
+			{
+				this.mass = value;
+				this.massInverse = float.IsPositiveInfinity(value) ? 0f : 1f / value;
+			}
+		}
+		public float MassInverse => this.massInverse;
+
+		public float gravityScale = 1f;
 		public Vector velocity; // momentum = product of velocity and mass
 		public Vector linearForce;
 
