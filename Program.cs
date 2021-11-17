@@ -96,29 +96,16 @@ namespace SharpEngine
 
         private static void CircleChangeColor(Triangle triangle, Circle circle)
         {
-            var angle = MathF.Acos(Vector.Dot(circle.GetCenter() - triangle.GetCenter(), triangle.Transform.Forward));
-
-            if (angle > 2)
-            {
-                //2+
-                circle.SetColor(Color.Black);
-
-            }
-            else if (angle < 1)
-            {
-                //1 - 2
-                circle.SetColor(Color.White);
-            }
-            else
-            {
-                //0 - 1
-                circle.SetColor(Color.Gray);
-            }
+            var angle = MathF.Acos(Vector.Dot((circle.GetCenter() - triangle.GetCenter()).Normalize(), triangle.Transform.Forward));
+            float interpolate = angle / MathF.PI;
+            circle.SetColor(new Color(interpolate, interpolate, interpolate, 1));
         }
 
         private static void RectangleChangeColor(Triangle triangle, Rectangle rectangle)
         {
-            if (Vector.Dot(rectangle.GetCenter() - triangle.GetCenter(), triangle.Transform.Forward) < 0) // change color on triangles left and right side
+            float direction = Vector.Dot((rectangle.GetCenter() - triangle.GetCenter()).Normalize(), triangle.Transform.Forward);
+            
+            if (direction < 0) // change color on triangles left and right side
             //if (Vector.Dot(rectangle.Transform.Forward, triangle.Transform.Forward) < 0) //change color on triangles right side
             {
                 rectangle.SetColor(Color.Green);
