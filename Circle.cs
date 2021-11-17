@@ -2,7 +2,7 @@ using System;
 
 namespace SharpEngine {
 	public class Circle : Shape {
-		public float Radius => .1f;
+		public float Radius => .1f * Transform.CurrentScale.x;
 
 		public Circle(Material material) : base(CreateCircle(), material) {
 		}
