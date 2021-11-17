@@ -10,6 +10,10 @@ namespace SharpEngine {
 
 		public Transform Transform { get; }
 		public Material material;
+		public float mass = 1f;
+		public Vector velocity; // momentum = product of velocity and mass
+		public Vector linearForce;
+
             
 		public Shape(Vertex[] vertices, Material material) {
 			this.vertices = vertices;
