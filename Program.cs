@@ -24,7 +24,7 @@ namespace SharpEngine
             var physics = new Physics(scene);
             window.Load(scene);
 
-            for (var i = 0; i < 30; i++)
+            for (var i = 0; i < 5; i++)
             {
                 var circle = new Circle(material);
                 var radius = GetRandomFloat(random, 0.3f);
