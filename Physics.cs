@@ -38,15 +38,27 @@ namespace SharpEngine
 					Circle other = this.scene.shapes[j] as Circle;
 					// check for collision
 					Vector deltaPosition = other.GetCenter() - shape.GetCenter();
-					bool collision = deltaPosition.GetSquareMagnitude() <= (shape.Radius + other.Radius) * (shape.Radius + other.Radius);
+					// Collision Detection
+					float squareOverlap = (shape.Radius + other.Radius) * (shape.Radius + other.Radius) - deltaPosition.GetSquareMagnitude();
 
-					if (collision)
+					if (squareOverlap > 0)
 					{
+						//Collision R
+
+						float overlap = MathF.Sqrt(squareOverlap);
 						Vector collisionNormal = deltaPosition.Normalize();
+						float totalMass = other.Mass + shape.Mass;
+						// Interprenetation Resolvement
+						other.Transform.Position += overlap * shape.Mass / totalMass * collisionNormal;
+						shape.Transform.Position -= overlap * other.Mass / totalMass * collisionNormal;
+
+						// Collision Impulses
+						// calculate the part of the shape's velocity that is parallel to the collision normal
 						Vector shapeVelocity = Vector.Dot(shape.velocity, collisionNormal) * collisionNormal;
+						// calculate the part of the other shape's velocity that is parallel to the collision normal
 						Vector otherVelocity = Vector.Dot(other.velocity, collisionNormal) * collisionNormal;
 
-						float totalMass = other.Mass + shape.Mass;
+						
 
 						Vector velocityChange = 2 * other.Mass / totalMass * (otherVelocity - shapeVelocity);
 						Vector otherVelocityChange = 2 * shape.Mass / totalMass * (shapeVelocity - otherVelocity); //-shape.Mass / other.Mass * velocityChange;
