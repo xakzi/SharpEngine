@@ -14,7 +14,7 @@ namespace SharpEngine
 
 		public void Update(float deltaTime)
 		{
-			var gravitationalAcceleration = Vector.Down * 9.819649f * 0;
+			var gravitationalAcceleration = Vector.Down * 9.819649f * 0f;
 			for (int i = 0; i < this.scene.shapes.Count; i++)
 			{
 				Circle shape = this.scene.shapes[i] as Circle;
@@ -43,8 +43,7 @@ namespace SharpEngine
 
 					if (squareOverlap > 0)
 					{
-						//Collision R
-
+						//Collision Resolution
 						float overlap = MathF.Sqrt(squareOverlap);
 						Vector collisionNormal = deltaPosition.Normalize();
 						float totalMass = other.Mass + shape.Mass;
@@ -98,7 +97,7 @@ namespace SharpEngine
 			AssertPreservationOfKineticEnergy(m1, v1, m2, v2, m1_, v1_, m2_, v2_);
 		}
 
-		static void AssertPreservationOfKineticEnergy(float m1, Vector v1, float m2, Vector v2, float m1_, Vector v1_, float m2_, Vector v2_, float tolerance = 0.00001f)
+		static void AssertPreservationOfKineticEnergy(float m1, Vector v1, float m2, Vector v2, float m1_, Vector v1_, float m2_, Vector v2_, float tolerance = 0.00005f)
 		{
 			float oldTotalKineticEnergy = CalculateTotalKineticEnergy(m1, v1, m2, v2);
 			float newTotalKineticEnergy = CalculateTotalKineticEnergy(m1_, v1_, m2_, v2_);
